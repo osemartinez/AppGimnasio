@@ -14,7 +14,43 @@ app.use(cors())
 
 //METODOS HTTP
 
-//falta metodo login
+//login
+
+app.post('/login', async (req, res) => {
+  try {
+    const { correoElectronico, contrasena } = req.body;
+
+    const usuario = await Usuarios.findOne({ where: { correoElectronico } });
+
+    
+    if (!usuario) {
+      return res.status(400).json({ message: 'Credenciales incorrectas' });
+    }
+
+   
+    if (usuario.estado !== 'activo') {
+      return res.status(403).json({ message: 'Usuario inactivo. No puedes iniciar sesión.' });
+    }
+
+ 
+    if (usuario.contrasena === contrasena) {
+      res.status(200).json({
+        message: 'Login exitoso',
+        usuario: {
+          id_usuario: usuario.id_usuario,
+          nombre: usuario.nombre,
+          correoElectronico: usuario.correoElectronico,
+          estado: usuario.estado,
+          id_rol: usuario.id_rol
+        }
+      });
+    } else {
+      res.status(400).json({ message: 'Credenciales incorrectas' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error en el proceso de login' });
+  }
+});
 
 //METODOS PARA USUARIOS
 
@@ -37,13 +73,13 @@ app.get('/usuarios', async (req, res) => {
     }
   });
 
- //actualizamos al usuario// tenemos preguntar si solo agregamos el estado a este metodo
+ 
   app.put('/usuarios/:id', async (req, res) => {
     try {
-      const { nombre, correoElectronico, telefono, id_rol } = req.body;
+      const { nombre, correoElectronico, telefono, estado, id_rol } = req.body;
   
       // Creamos un objeto con los campos que vienen en el cuerpo
-      let updatedUser = { nombre, correoElectronico, telefono, id_rol };
+      let updatedUser = { nombre, correoElectronico, telefono, estado, id_rol };
        
       // Actualizamos el usuario con los datos proporcionados
       const [updated] = await Usuarios.update(updatedUser, {
@@ -59,28 +95,6 @@ app.get('/usuarios', async (req, res) => {
       res.status(500).json({ error: 'Error al actualizar el usuario' });
     }
   });
-
-  //innecesario
-  app.put('/usuarios/estado/:id', async (req, res) => {
-    try {
-      const { estado } = req.body;
-  
-      // Solo actualizamos el estado a activo o inactivo
-      const [updated] = await Usuarios.update(
-        { estado }, 
-        { where: { id_usuario: req.params.id } }
-      );
-  
-      if (updated) {
-        res.status(200).json({ mensaje: `Usuario ${estado}` });
-      } else {
-        res.status(404).json({ message: 'Usuario no encontrado' });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar el estado del usuario' });
-    }
-  });
-
 
   
   // METODOS CLASES
@@ -121,22 +135,7 @@ app.get('/usuarios', async (req, res) => {
     }
   });
   
-  // es necesario este mtodo o podemos actualizar con el metodo anterior y cambiar solo el estado?.
-  app.delete('/clases/:id', async (req, res) => {
-    try {
-      const deleted = await Clases.destroy({
-        where: { id_clase: req.params.id }
-      });
   
-      if (deleted) {
-        res.status(200).json({ message: 'Clase eliminada' });
-      } else {
-        res.status(404).json({ message: 'Clase no encontrada' });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Error al eliminar la clase' });
-    }
-  });
   
   // METODOS RESERVAS
 
@@ -149,7 +148,6 @@ app.get('/usuarios', async (req, res) => {
     }
   });
   
-//ojo aca validar, es requerido aca o se puede hacer a nivel de frontend solamente?
 
   app.post('/reservas', async (req, res) => {
     try {
@@ -196,7 +194,76 @@ app.get('/usuarios', async (req, res) => {
     }
   });
 
-//este no esta funcionando bien, incrementa el numero de cupos maximos y solo debemos 
+
+  app.delete('/reservas/:id', async (req, res) => {
+    try {
+      // Buscar la reserva que se quiere eliminar
+      const reserva = await Reservas.findOne({ where: { id_reserva: req.params.id } });
+  
+      if (!reserva) {
+        return res.status(404).json({ message: 'Reserva no encontrada' });
+      }
+  
+      // Eliminar la reserva
+      await reserva.destroy();
+  
+      // Responder con éxito
+      res.status(200).json({ message: 'Reserva eliminada' });
+  
+    } catch (error) {
+      res.status(500).json({ error: 'Error al eliminar la reserva' });
+    }
+  });
+
+
+
+
+
+app.listen(5000, ()=>{
+    console.log('Ejecutando en puerto 5000')
+})
+
+
+/*
+  //innecesario
+  app.put('/usuarios/estado/:id', async (req, res) => {
+    try {
+      const { estado } = req.body;
+  
+      // Solo actualizamos el estado a activo o inactivo
+      const [updated] = await Usuarios.update(
+        { estado }, 
+        { where: { id_usuario: req.params.id } }
+      );
+  
+      if (updated) {
+        res.status(200).json({ mensaje: `Usuario ${estado}` });
+      } else {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar el estado del usuario' });
+    }
+  });
+
+  // es necesario este mtodo o podemos actualizar con el metodo anterior y cambiar solo el estado?.
+  app.delete('/clases/:id', async (req, res) => {
+    try {
+      const deleted = await Clases.destroy({
+        where: { id_clase: req.params.id }
+      });
+  
+      if (deleted) {
+        res.status(200).json({ message: 'Clase eliminada' });
+      } else {
+        res.status(404).json({ message: 'Clase no encontrada' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Error al eliminar la clase' });
+    }
+  });
+
+  /*este no esta funcionando bien, incrementa el numero de cupos maximos y solo debemos 
   app.delete('/reservas/:id', async (req, res) => {
     try {
       const reserva = await Reservas.findOne({ where: { id_reserva: req.params.id } });
@@ -211,7 +278,8 @@ app.get('/usuarios', async (req, res) => {
 
       const clase = await Clases.findOne({ where: { id_clase: reserva.id_clase } });
       if (clase) {
-        await Clases.update({ cuposMaximos: clase.cuposMaximos + 1 }, { where: { id_clase: clase.id_clase } });
+        await Clases.update({ cuposMaximos: clase.cuposMaximos - 1 }, { 
+          where: { id_clase: clase.id_clase } });
       }
   
       res.status(200).json({ message: 'Reserva eliminada y cupo restaurado' });
@@ -219,11 +287,5 @@ app.get('/usuarios', async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar la reserva' });
     }
-  });
-
-
-
-
-app.listen(5000, ()=>{
-    console.log('Ejecutando en puerto 5000')
-})
+  }); 
+*/
