@@ -148,7 +148,7 @@ app.get('/usuarios', async (req, res) => {
     }
   });
   
-
+/*
   app.post('/reservas', async (req, res) => {
     try {
       // Busca la clase a la que se quiere hacer la reserva
@@ -173,7 +173,60 @@ app.get('/usuarios', async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Error al crear la reserva' });
     }
-  });
+  }); */
+
+app.post('/reservas', async (req, res) => {
+  try {
+    const { id_clase, id_usuario } = req.body;
+
+    // Verificar si el usuario ya tiene una reserva para la misma clase
+    const existeReserva = await Reservas.findOne({
+      where: { id_clase, id_usuario, estado: 'reservado' },
+    });
+
+    if (existeReserva) {
+      return res.status(400).json({ message: 'Ya has reservado esta clase.' });
+    }
+
+    // Verificar si hay cupos disponibles
+    const clase = await Clases.findOne({ where: { id_clase } });
+    if (!clase) {
+      return res.status(404).json({ message: 'Clase no encontrada' });
+    }
+
+    const reservas = await Reservas.count({ where: { id_clase, estado: 'reservado' } });
+    if (reservas >= clase.cuposMaximos) {
+      return res.status(400).json({ message: 'No hay cupos disponibles para esta clase' });
+    }
+
+    // Crear la nueva reserva
+    const reserva = await Reservas.create(req.body);
+    res.status(200).json(reserva);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear la reserva' });
+  }
+});
+/*
+app.post('/reservas', async (req, res) => {
+  try {
+    // Asumimos que el cuerpo de la solicitud contiene id_clase e id_usuario.
+    const { id_clase, id_usuario } = req.body;
+
+    // Crear la nueva reserva (sin validación por ahora)
+    const nuevaReserva = await Reservas.create({
+      id_clase,
+      id_usuario,
+      estado: 'reservado', // Estado por defecto
+      fechaReserva: new Date().toISOString(), // Fecha de la reserva
+    });
+
+    // Respondemos con la nueva reserva creada
+    res.status(200).json(nuevaReserva);
+  } catch (error) {
+    console.error("Error al crear la reserva", error);
+    res.status(500).json({ error: 'Error al crear la reserva' });
+  }
+}); */
 
   
   app.put('/reservas/:id', async (req, res) => {
