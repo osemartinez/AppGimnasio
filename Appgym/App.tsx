@@ -7,13 +7,9 @@ import { NavigationContainer } from "@react-navigation/native";
 export default function App() {
   return (
     <ProviderGym>
-    <NavigationContainer>
-
-    <NavegacionTab></NavegacionTab>
-
-    </NavigationContainer>
-        
-      
+      <NavigationContainer>       
+        <NavegacionTab></NavegacionTab>
+      </NavigationContainer>
     </ProviderGym>
   );
 }

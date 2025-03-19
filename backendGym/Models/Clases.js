@@ -22,12 +22,13 @@ const Clases = sequelize.define('clases',{
   },
 
   horaInicio: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING(10),
+
     
   },
 
   horaFin: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING(10),
     
   },
 

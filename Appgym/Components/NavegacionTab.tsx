@@ -17,6 +17,7 @@ export default function NavegacionTab() {
   const { idRol } = useContextGym();
 
   return (
+    
     <tab.Navigator initialRouteName="Login">
       {idRol === null && <tab.Screen name="Login" component={Login} options={{
           tabBarIcon: ({ color, size }) => (
