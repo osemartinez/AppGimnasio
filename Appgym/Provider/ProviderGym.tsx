@@ -74,7 +74,7 @@ export default function ProviderGym({children}: NodeReact) {
   // Función para actualizar un usuario
   const actualizarUsuario = async (id_usuario: number, usuario: Usuario) => {
     try {
-      const response = await fetch(`http://localhost:5000/usuarios/${id_usuario}`, {
+      const response = await fetch(`${API_URL}/usuarios/${id_usuario}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ export default function ProviderGym({children}: NodeReact) {
 // Obtener clases desde el backend
 const obtenerClases = async () => {
   try {
-    const response = await fetch("http://localhost:5000/clases");
+    const response = await fetch(`${API_URL}/clases`);
     const data = await response.json();
     setClases(data);
   } catch (error) {
@@ -132,7 +132,7 @@ const obtenerClases = async () => {
 // Agregar clase
 const agregarClase = async (clase: Clase) => {
   try {
-    const response = await fetch("http://localhost:5000/clases", {
+    const response = await fetch(`${API_URL}/clases`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -149,7 +149,7 @@ const agregarClase = async (clase: Clase) => {
 // Actualizar clase
 const actualizarClase = async (id_clase: number, clase: Clase) => {
   try {
-    const response = await fetch(`http://localhost:5000/clases/${id_clase}`, {
+    const response = await fetch(`${API_URL}/clases/${id_clase}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -188,7 +188,7 @@ const cambiarEstadoClase = async (id_clase: number, estado: 'activo' | 'inactivo
 
 const obtenerReservas = async () => {
   try {
-    const response = await fetch('http://localhost:5000/reservas');
+    const response = await fetch(`${API_URL}/reservas`);
     const data = await response.json();
     setReservas(data);
   } catch (error) {
@@ -199,7 +199,7 @@ const obtenerReservas = async () => {
 // Función para agregar una reserva
 const agregarReserva = async (reserva: Reserva) => {
   try {
-    const response = await fetch("http://localhost:5000/reservas", {
+    const response = await fetch(`${API_URL}/reservas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -219,7 +219,7 @@ const agregarReserva = async (reserva: Reserva) => {
 // Función para actualizar una reserva
 const cancelarReserva = async (id_reserva: number) => {
   try {
-    const response = await fetch(`http://localhost:5000/reservas/${id_reserva}`, {
+    const response = await fetch(`${API_URL}/reservas/${id_reserva}`, {
       method: 'DELETE',
     });
 
@@ -239,7 +239,7 @@ const cancelarReserva = async (id_reserva: number) => {
 
 const obtenerEventos = async () => {
   try {
-    const response = await fetch('http://localhost:5000/eventos');
+    const response = await fetch(`${API_URL}/eventos`);
     const data = await response.json();
     setEventos(data);
   } catch (error) {
@@ -249,7 +249,7 @@ const obtenerEventos = async () => {
 
 const agregarEvento = async (evento: Evento) => {
   try {
-    const response = await fetch('http://localhost:5000/eventos', {
+    const response = await fetch(`${API_URL}/eventos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(evento),
@@ -281,7 +281,7 @@ const actualizarEvento = async (id_evento: number, evento: Evento) => {
 // Eliminar un evento
 const eliminarEvento = async (id_evento: number) => {
   try {
-    const response = await fetch(`http://localhost:5000/eventos/${id_evento}`, {
+    const response = await fetch(`${API_URL}/eventos/${id_evento}`, {
       method: 'DELETE',
     });
     if (response.ok) {
