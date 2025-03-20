@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Reservas from '../Reservas/Reservas';
+import EventosUsuarios1 from '../EventosUsuarios/EventosUsuarios1';
 
 export default function Usuarios() {
 
@@ -32,6 +33,16 @@ export default function Usuarios() {
           headerShown: false, 
         }}
       >
+
+      <Tab.Screen
+          name="Eventos y Promociones"
+          component={EventosUsuarios1}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="event" size={24} color="black" />
+            ),
+          }}
+        />
         <Tab.Screen
           name="Reservas"
           component={Reservas}

@@ -14,7 +14,7 @@ export default function GestionClases() {
   const [instructorNombre, setInstructorNombre] = useState('');
   const [idClase, setIdClase] = useState<number | null>(null);
 
-  // Cargar clase cuando idClase es distinto de null
+  // Carga clase cuando idClase es distinto de null
   useEffect(() => {
     if (idClase !== null) {
       const clase = clases.find((clase) => clase.id_clase === idClase);
