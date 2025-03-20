@@ -4,6 +4,7 @@ import { Usuario } from '../Models/Usuario';
 import { ContextGym } from '../Context/ContextGym';
 import { Clase } from '../Models/Clase';
 import { Reserva } from '../Models/Reserva';
+import { Evento } from '../Models/Evento';
 
 interface NodeReact{
     children:ReactNode;
@@ -18,6 +19,14 @@ export default function ProviderGym({children}: NodeReact) {
     const [clases, setClases] = useState<Clase[]>([]);
 
     const [reservas, setReservas] = useState<Reserva[]>([]);
+
+    const [eventos, setEventos] = useState<Evento[]>([]);
+
+    const API_URL ='http://192.168.0.192:5000'
+
+    //(`http://localhost:5000/usuarios/${id_usuario}`
+
+
 
   
 
@@ -36,7 +45,7 @@ export default function ProviderGym({children}: NodeReact) {
   // Función para obtener los usuarios
   const obtenerUsuarios = async () => {
     try {
-      const response = await fetch('http://localhost:5000/usuarios'); 
+      const response = await fetch(`${API_URL}/usuarios`); 
       const data = await response.json();
       setUsuarios(data);
     } catch (error) {
@@ -47,7 +56,7 @@ export default function ProviderGym({children}: NodeReact) {
   // Función para agregar un usuario
   const agregarUsuario = async (usuario: Usuario) => {
     try {
-      const response = await fetch('http://localhost:5000/usuarios', {
+      const response = await fetch(`${API_URL}/usuarios`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -226,7 +235,64 @@ const cancelarReserva = async (id_reserva: number) => {
   }
 };
 
+//eventos informativos
 
+const obtenerEventos = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/eventos');
+    const data = await response.json();
+    setEventos(data);
+  } catch (error) {
+    console.error('Error al obtener eventos', error);
+  }
+};
+
+const agregarEvento = async (evento: Evento) => {
+  try {
+    const response = await fetch('http://localhost:5000/eventos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(evento),
+    });
+
+    const newEvento = await response.json();
+    setEventos((prevEventos) => [...prevEventos, newEvento]);
+  } catch (error) {
+    console.error('Error al agregar evento', error);
+  }
+};
+/*
+const actualizarEvento = async (id_evento: number, evento: Evento) => {
+  try {
+    const response = await fetch(`http://localhost:5000/eventos/${id_evento}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(evento),
+    });
+    const updatedEvento = await response.json();
+    setEventos(eventos.map((e) => (e.id_evento === id_evento ? updatedEvento : e)));
+  } catch (error) {
+    console.error('Error al actualizar evento:', error);
+  }
+};*/
+
+// Eliminar un evento
+const eliminarEvento = async (id_evento: number) => {
+  try {
+    const response = await fetch(`http://localhost:5000/eventos/${id_evento}`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      setEventos(eventos.filter((evento) => evento.id_evento !== id_evento));
+    } else {
+      console.error('No se pudo eliminar el evento');
+    }
+  } catch (error) {
+    console.error('Error al eliminar evento:', error);
+  }
+};
 
 
 
@@ -238,6 +304,7 @@ useEffect(() => {
   if (idRol === 2) {
     obtenerReservas(); 
     obtenerClases();
+   //obtenerEventos();
   }
 }, [idRol]);
 
@@ -262,7 +329,11 @@ useEffect(() => {
         reservas,
         obtenerReservas,
         agregarReserva,
-        cancelarReserva
+        cancelarReserva,
+        eventos, obtenerEventos, agregarEvento,
+         eliminarEvento
+
+
 
     }}>
       {children}

@@ -8,6 +8,9 @@ import GestionClases from "../GestionClases/GestionClases";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import Eventos1 from "../Eventos/Eventos1";
+
+
 
 
 export default function Administrador() {
@@ -53,7 +56,22 @@ export default function Administrador() {
             ),
           }}
         />
+
+        <Tab.Screen
+          name="Eventos y promociones"
+          component={Eventos1}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="event" size={24} color="black" />
+            ),
+          }}
+        />
+
+
       </Tab.Navigator>
+
+
+
     </View>
    
   );
