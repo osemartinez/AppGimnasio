@@ -3,6 +3,7 @@ import { createContext } from "react";
 import {Usuario} from "../Models/Usuario"
 import { Clase } from "../Models/Clase";
 import { Reserva } from "../Models/Reserva";
+import { Evento } from "../Models/Evento";
 
 export const ContextGym = createContext({
 
@@ -33,6 +34,14 @@ export const ContextGym = createContext({
     agregarReserva: (reserva: Reserva) => {}, 
     //actualizarReserva: (id_reserva: number, reserva: Reserva) => {},  
     cancelarReserva: (id_reserva: number) => {},
+
+    //eventos informativos
+    eventos: [] as Evento[],
+    obtenerEventos: () => {},
+    agregarEvento: (evento: Evento) => {},
+    //actualizarEvento: (id_evento: number, evento: Evento) => {},
+    eliminarEvento: (id_evento: number) => {},
+
 
 });
 

@@ -6,6 +6,7 @@ const Clases = require('./Models/Clases')
 const Reservas = require('./Models/Reservas')
 const Roles = require('./Models/Roles')
 const Usuarios = require('./Models/Usuarios')
+const Eventos = require('./Models/Eventos')
 
 
 app.use(express.json())
@@ -268,7 +269,59 @@ app.post('/reservas', async (req, res) => {
     }
   });
 
+//agregando los eventos informativos
 
+app.post('/eventos', async (req, res) => {
+  try {
+    const { descripcion } = req.body;
+    const nuevoEvento = await Eventos.create({ descripcion });
+    res.status(200).json(nuevoEvento);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear el evento' });
+  }
+});
+
+app.get('/eventos', async (req, res) => {
+  try {
+    const eventos = await Eventos.findAll();
+    res.status(200).json(eventos);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los eventos' });
+  }
+});
+
+app.put('/eventos/:id', async (req, res) => {
+  try {
+    const { descripcion } = req.body;
+    const evento = await Eventos.update({ descripcion }, {
+      where: { id_evento: req.params.id },
+    });
+
+    if (evento[0] === 0) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Evento actualizado con éxito' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar el evento' });
+  }
+});
+
+// Eliminar un evento
+app.delete('/eventos/:id', async (req, res) => {
+  try {
+    const evento = await Eventos.findOne({ where: { id_evento: req.params.id } });
+
+    if (!evento) {
+      return res.status(404).json({ message: 'Evento no encontrado' });
+    }
+
+    await evento.destroy();
+    res.status(200).json({ message: 'Evento eliminado con éxito' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar el evento' });
+  }
+});
 
 
 

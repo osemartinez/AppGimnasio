@@ -71,7 +71,7 @@ export default function GestionCliente() {
     }
   };
 
-  // Función para inactivar un usuario
+  // Funcion para inactivar un usuario
   const manejarInactivarUsuario = (id: number | undefined) => {
     if (id !== undefined) {
       cambiarEstadoUsuario(id, 'inactivo');
