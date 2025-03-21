@@ -10,6 +10,8 @@ export default function Login() {
     const { iniciarSesion } = useContextGym(); 
     const navigation = useNavigation();
 
+
+    //'http://192.168.0.192:5000/login'
     const manejarLogin = async () => {
         try {
           const respuesta = await fetch('http://192.168.0.192:5000/login', {

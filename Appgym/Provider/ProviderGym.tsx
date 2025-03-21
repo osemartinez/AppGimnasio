@@ -24,6 +24,8 @@ export default function ProviderGym({children}: NodeReact) {
 
     const API_URL ='http://192.168.0.192:5000'
 
+    //const API_URL ='http://10.16.153.61:5000'
+
     //(`http://localhost:5000/usuarios/${id_usuario}`
 
 
